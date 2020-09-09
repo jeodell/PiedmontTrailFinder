@@ -1,0 +1,32 @@
+<%- include("./partials/header") %>
+<div class="container mt-4">
+    <h1 style="text-align: center; margin-top: 25px; margin-bottom: 25px;">Register</h1>
+
+    <div style="width: 30%; margin: 0 auto;">
+        <form action="/register" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Username" />
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Email" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+            </div>
+            <div class="form-group">
+                <label for="password_confirm">Confirm Password</label>
+                <input type="password" class="form-control" name="password_confirm" id="password_confirm"
+                    placeholder="Password" />
+            </div>
+            <div class="d-flex align-items-center flex-column">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/trails" class="mb-4">Go Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include("./partials/footer") %>

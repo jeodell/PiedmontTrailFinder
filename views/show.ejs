@@ -1,0 +1,101 @@
+<%- include("./partials/header") %>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-3">
+      <p class="lead">PiedmontTrailFinder</p>
+      <div class="list-group">
+        <!-- PLACEHOLDER VALUES -->
+        <li class="list-group-item">Distance: 3 miles</li>
+        <li class="list-group-item">Type: Walking/Hiking</li>
+        <li class="list-group-item">Difficulty: Moderate</li>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="card">
+        <img class="card-img-top img-responsive h-100" src="<%= trail.image %>" alt="Card image cap" />
+        <div class="card-body">
+          <div>
+            <h3 class="card-title"><%= trail.name %></h3>
+          </div>
+          <p><%= trail.description %></p>
+          <p><em>Submitted by <%= trail.author.username %> </em></p>
+          <% if(currentUser && trail.author.id.equals(currentUser._id)) { %>
+          <form action="/trails/<%= trail._id %>?_method=DELETE" method="POST">
+            <button class="float-right btn btn-danger">
+              Delete
+            </button>
+          </form>
+          <a class="btn btn-warning" href="/trails/<%= trail._id %>/edit">Edit
+          </a>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <div class="thumbnail mt-4">
+        <div class="caption-full">
+          <% if (trail.rating === 0) { %>
+          <h5>
+            <em>No reviews yet.</em>
+          </h5>
+          <% } else { %>
+          <p>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star <% if (trail.rating > 1.5) { %> checked <% } %>"></span>
+            <span class="fa fa-star <% if (trail.rating > 2.5) { %> checked <% } %>"></span>
+            <span class="fa fa-star <% if (trail.rating > 3.5) { %> checked <% } %>"></span>
+            <span class="fa fa-star <% if (trail.rating > 4.5) { %> checked <% } %>"></span>
+            <em>(total reviews: <%= trail.reviews.length %>)</em>
+          </p>
+          <p>
+            Current trail rating:
+            <strong><%= trail.rating.toFixed(2) %></strong>
+          </p>
+          <h4>Latest reviews for this trail:</h4>
+          <hr style="margin-top: 0;" />
+          <% trail.reviews.slice(0, 5).forEach(function(review){ %>
+          <div class="row">
+            <div class="col-md-3">
+              <%- '<span class="fa fa-star checked"></span>'.repeat(review.rating) %>
+              <%- '<span class="fa fa-star"></span>'.repeat(5 - review.rating) %>
+              <div>
+                Review by:
+                <strong><%= review.author.username %></strong>
+              </div>
+              <span><em><%= review.updatedAt.toDateString() %></em></span>
+            </div>
+            <div class="col-md-9">
+              <p style="
+                                    text-align: justify;
+                                    word-wrap: break-word;
+                                ">
+                <%= review.text %>
+              </p>
+              <% if(currentUser && review.author.id.equals(currentUser._id)){ %>
+              <form id="delete-form" action="/trails/<%=trail._id %>/reviews/<%=review._id %>?_method=DELETE"
+                method="POST" class="float-right">
+                <input type="submit" class="btn btn-xs btn-danger" value="Delete" />
+              </form>
+              <a class="btn btn-xs btn-warning float-right"
+                href="/trails/<%=trail._id %>/reviews/<%=review._id %>/edit">Edit
+              </a>
+              <% } %>
+            </div>
+          </div>
+          <hr />
+          <% }); %>
+          <% } %>
+          <div>
+            <a class="btn btn-primary btn-lg mb-4 <% if (currentUser && trail.reviews && trail.reviews.some(function (review) {return review.author.id.equals(currentUser._id)})) { %> disabled <% } %>"
+              href="/trails/<%= trail._id %>/reviews/new">
+              Write a New Review
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("./partials/footer") %>

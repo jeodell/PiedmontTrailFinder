@@ -1,0 +1,105 @@
+<%- include("./partials/header") %>
+
+<div class="container mt-4">
+    <div class="jumbotron trails-jumbotron card card-image">
+        <div class="text-center py-5 px-4">
+            <div>
+                <h1 class="card-title pt-5">Trails in the Piedmont</h1>
+                <h4 class="">Find your new favorite trail</h4>
+                <a href="/trails/new" class="btn btn-lg bg-ptf">Add Trail</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row card-deck">
+        <% trails.forEach( (trail) => { %>
+        <div class="col-sm-6 col-md-4 mb-2">
+            <div class="card h-100">
+                <div class="item">
+                    <a href="trails/<%= trail._id %>">
+                        <img class="card-img-top img-fluid" src="<%= trail.image %>" alt="Card image cap" />
+                        <i class="fa fa-map-signs"></i>
+                    </a>
+                </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title"><%= trail.name %></h5>
+                    <% if (trail.rating === 0 ) { %>
+                    <em>No reviews yet.</em>
+                    <% } else { %>
+                    <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star <% if (trail.rating > 1.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (trail.rating > 2.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (trail.rating > 3.5) { %> checked <% } %>"></span>
+                    <span class="fa fa-star <% if (trail.rating > 4.5) { %> checked <% } %>"></span>
+                    <% } %>
+                    <div class="row mt-2">
+                        <form class="col-lg-6 p-0 m-0" action="/trails/<%= trail._id %>/like" method="POST">
+                            <div class="btn-group">
+                                <% if (currentUser && trail.likes.some((like) => {
+                                    return like.equals(currentUser._id)
+                                })) { %>
+                                <button class="btn btn-sm btn-primary">
+                                    <i class="fas fa-thumbs-up"></i> Liked (<%= trail.likes.length %>)
+                                </button>
+                                <% } else { %>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-thumbs-up"></i> Like (<%= trail.likes.length %>)
+                                </button>
+                                <% } %>
+                            </div>
+                        </form>
+                        <a href="trails/<%= trail._id %>" class="btn btn-sm bg-ptf col-lg-5">Read More</a>
+                    </div>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+
+    <nav class="my-4" aria-label="Page navigation">
+        <% if (pages && pages > 0) { %>
+        <ul class="pagination justify-content-center">
+            <% if (current == 1) { %>
+            <li class="page-item disabled"><a class="page-link">First</a></li>
+            <% } else { %>
+            <li><a class="page-link" href="/trails">First</a></li>
+            <% } %> <% if (current == 1) { %>
+            <li class="page-item disabled"><a class="page-link">«</a></li>
+            <% } else { %>
+            <li>
+                <a class="page-link" href="/trails?page=<%= Number(current) - 1 %>">«</a>
+            </li>
+            <% } %> <% var i = (Number(current) > 5 ? Number(current) - 4 : 1)
+            %> <% if (i !== 1) { %>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <% } %> <% for (; i <= (Number(current) + 4) && i <= pages; i++) {
+            %> <% if (i == current) { %>
+            <li class="active"><a class="page-link"><%= i %></a></li>
+            <% } else { %>
+            <li>
+                <a class="page-link" href="/trails?page=<%= i %>"><%= i %></a>
+            </li>
+            <% } %> <% if (i == Number(current) + 4 && i < pages) { %>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <% } %> <% } %> <% if (current == pages) { %>
+            <li class="page-item disabled"><a class="page-link">»</a></li>
+            <% } else { %>
+            <li>
+                <a class="page-link" href="/trails?page=<%= Number(current) + 1 %>">»</a>
+            </li>
+            <% } %> <% if (current == pages) { %>
+            <li class="page-item disabled"><a class="page-link">Last</a></li>
+            <% } else { %>
+            <li>
+                <a class="page-link" href="/trails?page=<%= pages %>">Last</a>
+            </li>
+            <% } %>
+        </ul>
+        <% } %>
+    </nav>
+
+    <%- include("./partials/footer") %>
+</div>
